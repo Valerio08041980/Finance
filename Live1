@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Portfolio Live</title>
+</head>
+
+<body style="background:#111; color:white; font-family:Arial; text-align:center;">
+
+<h1>📊 Portfolio Investimenti</h1>
+
+<div id="price" style="font-size:30px;">Caricamento...</div>
+<div id="profit" style="font-size:24px;"></div>
+
+<script>
+
+const quantity = 70;
+const buyPrice = 225;
+
+async function load() {
+  try {
+
+    const res = await fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL");
+    const data = await res.json();
+
+    const usd = data.quoteResponse.result[0].regularMarketPrice;
+
+    const fx = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=EUR");
+    const fxData = await fx.json();
+
+    const eur = usd * fxData.rates.EUR;
+
+    const profit = (eur - buyPrice) * quantity;
+
+    document.getElementById("price").innerText =
+      "Apple: " + eur.toFixed(2) + " €";
+
+    document.getElementById("profit").innerText =
+      "Profitto: " + profit.toFixed(2) + " €";
+
+  } catch (e) {
+    document.getElementById("price").innerText = "Errore dati";
+  }
+}
+
+load();
+setInterval(load, 60000);
+
+</script>
+
+</body>
+</html>
