@@ -2,24 +2,100 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Portfolio Live</title>
+<title>Banca Privata Pro</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  background:#0a0a0a;
+  color:white;
+}
+
+.header {
+  text-align:center;
+  padding:20px;
+  background:#111;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap:15px;
+  padding:20px;
+}
+
+.card {
+  background:#161616;
+  padding:20px;
+  border-radius:14px;
+}
+
+.title { color:#aaa; }
+.value { font-size:26px; margin-top:10px; }
+
+.green { color:#00e676; }
+.red { color:#ff5252; }
+</style>
 </head>
 
-<body style="background:#111; color:white; font-family:Arial; text-align:center;">
+<body>
 
-<h1>📊 Portfolio Investimenti</h1>
+<div class="header">
+  <h1>🏦 Banca Privata Pro</h1>
+  <p>Portfolio multi-asset live</p>
+</div>
 
-<div id="price" style="font-size:30px;">Caricamento...</div>
-<div id="profit" style="font-size:24px;"></div>
+<div class="grid">
+
+  <!-- APPLE -->
+  <div class="card">
+    <div class="title">🍎 Apple</div>
+    <div class="value" id="applePrice">--</div>
+    <div id="appleProfit">--</div>
+    <div id="applePercent">--</div>
+  </div>
+
+  <!-- ORO -->
+  <div class="card">
+    <div class="title">🪙 Oro (XAU/EUR)</div>
+    <div class="value" id="goldPrice">--</div>
+    <div id="goldValue">--</div>
+  </div>
+
+  <!-- BTP -->
+  <div class="card">
+    <div class="title">🏦 BTP</div>
+    <div class="value" id="btpValue">--</div>
+    <div style="font-size:13px;color:#888;">
+      Valore simulato (aggiornabile manualmente o via API futura)
+    </div>
+  </div>
+
+  <!-- TOTAL -->
+  <div class="card">
+    <div class="title">💰 Totale Portfolio</div>
+    <div class="value" id="total">--</div>
+  </div>
+
+</div>
 
 <script>
 
-const quantity = 70;
-const buyPrice = 225;
+const appleQty = 70;
+const appleBuy = 225;
 
-async function load() {
+// BTP simulato (puoi cambiarlo)
+let btpValue = 10200;
+
+// oro (dummy iniziale)
+let goldQty = 1;
+
+async function update() {
+
   try {
 
+    // 🍎 APPLE
     const res = await fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL");
     const data = await res.json();
 
@@ -30,21 +106,51 @@ async function load() {
 
     const eur = usd * fxData.rates.EUR;
 
-    const profit = (eur - buyPrice) * quantity;
+    const invested = appleBuy * appleQty;
+    const current = eur * appleQty;
+    const profit = current - invested;
+    const percent = (profit / invested) * 100;
 
-    document.getElementById("price").innerText =
-      "Apple: " + eur.toFixed(2) + " €";
+    document.getElementById("applePrice").innerText =
+      eur.toFixed(2) + " €";
 
-    document.getElementById("profit").innerText =
+    document.getElementById("appleProfit").innerText =
       "Profitto: " + profit.toFixed(2) + " €";
 
+    document.getElementById("applePercent").innerText =
+      "Performance: " + percent.toFixed(2) + " %";
+
+    // 🪙 ORO (XAU/USD)
+    const goldRes = await fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=XAUUSD=X");
+    const goldData = await goldRes.json();
+
+    const goldUsd = goldData.quoteResponse.result[0].regularMarketPrice;
+
+    const goldEur = goldUsd * fxData.rates.EUR;
+
+    document.getElementById("goldPrice").innerText =
+      goldEur.toFixed(2) + " € / oz";
+
+    document.getElementById("goldValue").innerText =
+      "Valore: aggiornato live";
+
+    // 🏦 BTP (simulato)
+    document.getElementById("btpValue").innerText =
+      btpValue.toFixed(2) + " €";
+
+    // 💰 TOTAL
+    const total = current + goldEur + btpValue;
+
+    document.getElementById("total").innerText =
+      total.toFixed(2) + " €";
+
   } catch (e) {
-    document.getElementById("price").innerText = "Errore dati";
+    document.getElementById("total").innerText = "Errore dati";
   }
 }
 
-load();
-setInterval(load, 60000);
+update();
+setInterval(update, 60000);
 
 </script>
 
