@@ -3,106 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Apple</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .content {
-            margin: 20px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .card {
-            margin-bottom: 15px;
-        }
-        .title {
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .value {
-            font-size: 24px;
-            margin-top: 10px;
-        }
-        .profit {
-            font-size: 18px;
-            margin-top: 10px;
-        }
-        .green {
-            color: #28a745;
-        }
-        .red {
-            color: #dc3545;
-        }
-    </style>
+    <title>Test di Base</title>
 </head>
 <body>
-
-<header>
-    <h1>🏦 Portfolio Apple</h1>
-    <p>Informazioni in tempo reale</p>
-</header>
-
-<div class="content">
-    <div class="card">
-        <div class="title">🍎 Prezzo Attuale Apple (EUR)</div>
-        <div class="value" id="applePrice">Caricamento...</div>
-    </div>
-
-    <div class="card">
-        <div class="title">💰 Profitto da 70 azioni</div>
-        <div class="profit" id="appleProfit">Caricamento...</div>
-    </div>
-
-    <div class="card">
-        <div class="title">📉 Performance</div>
-        <div class="profit" id="applePerformance">Caricamento...</div>
-    </div>
-</div>
-
-<script>
-    const appleQuantity = 70;
-    const applePurchasePrice = 225; // Prezzo per azione in EUR
-
-    async function fetchApplePrice() {
-        // Simuliamo il prezzo di Apple con un valore casuale per l'esempio
-        // In un'applicazione reale, dovresti usare un'API per ottenere il prezzo reale
-        const applePriceInUsd = 150; // Simulato in USD
-        const usdToEur = 0.94; // Simulato tasso di cambio USD->EUR
-        const applePriceInEur = applePriceInUsd * usdToEur;
-
-        // Calcolo del profitto
-        const totalInvestment = applePurchasePrice * appleQuantity;
-        const currentValue = applePriceInEur * appleQuantity;
-        const profit = currentValue - totalInvestment;
-        const performance = ((profit / totalInvestment) * 100).toFixed(2);
-
-        // Aggiornamento interfaccia
-        document.getElementById('applePrice').innerText = applePriceInEur.toFixed(2) + ' €';
-        document.getElementById('appleProfit').innerText = profit.toFixed(2) + ' €';
-        document.getElementById('applePerformance').innerText = performance + ' %';
-
-        // Imposta il colore del profitto in base al risultato
-        document.getElementById('appleProfit').className = profit >= 0 ? 'green' : 'red';
-        document.getElementById('applePerformance').className = performance >= 0 ? 'green' : 'red';
-    }
-
-    // Chiama la funzione per aggiornare il prezzo
-    fetchApplePrice();
-
-</script>
-
+    <h1>Test di Base</h1>
+    <p>Se vedi questo messaggio, significa che la tua pagina HTML funziona correttamente!</p>
 </body>
 </html>
