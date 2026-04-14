@@ -2,23 +2,23 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Portfolio Definitivo</title>
+<title>Portfolio Live</title>
 
 <style>
 body {
   margin:0;
-  background:#0b0b0b;
+  background:#0f0f0f;
   color:white;
   font-family:Arial;
 }
 
 .header {
+  padding:20px;
   text-align:center;
-  padding:25px;
-  background:#1a1a1a;
+  background:#1c1c1c;
 }
 
-.grid {
+.container {
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
@@ -26,22 +26,16 @@ body {
 }
 
 .card {
-  background:#1f1f1f;
+  background:#1c1c1c;
   margin:10px;
   padding:20px;
   border-radius:12px;
-  width:280px;
+  width:300px;
   text-align:center;
 }
 
-.big {
-  font-size:28px;
-  margin-top:10px;
-}
-
-.green { color:#00e676; }
+.green { color:#00c853; }
 .red { color:#ff5252; }
-.gray { color:#aaa; }
 </style>
 </head>
 
@@ -49,42 +43,30 @@ body {
 
 <div class="header">
   <h1>📊 Portfolio Investimenti</h1>
-  <p>Dashboard automatica live</p>
 </div>
 
-<div class="grid">
+<div class="container">
 
   <div class="card">
     <h2>🍎 Apple</h2>
-    <div id="applePrice" class="big">--</div>
-    <div id="appleProfit">--</div>
-    <div id="applePercent">--</div>
+    <div id="price">--</div>
+    <div id="profit">--</div>
+    <div id="percent">--</div>
   </div>
 
   <div class="card">
     <h2>🪙 Oro</h2>
-    <div class="gray">Da collegare (XAU/EUR)</div>
-  </div>
-
-  <div class="card">
-    <h2>🏦 BTP</h2>
-    <div class="gray">Da collegare</div>
-  </div>
-
-  <div class="card">
-    <h2>💰 Totale Portfolio</h2>
-    <div class="gray">Apple + altri asset</div>
+    <p>Sezione pronta (XAU/EUR)</p>
   </div>
 
 </div>
 
 <script>
 
-const appleQty = 70;
-const appleBuy = 225;
+const quantity = 70;
+const buyPrice = 225;
 
-async function update() {
-
+async function load() {
   try {
 
     // Apple USD
@@ -93,37 +75,39 @@ async function update() {
 
     const usd = data.quoteResponse.result[0].regularMarketPrice;
 
-    // USD → EUR
+    // EUR conversion
     const fx = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=EUR");
     const fxData = await fx.json();
 
-    const eur = usd * fxData.rates.EUR;
+    const eurPrice = usd * fxData.rates.EUR;
 
-    // calcoli Apple
-    const invested = appleBuy * appleQty;
-    const current = eur * appleQty;
+    // calcoli
+    const invested = buyPrice * quantity;
+    const current = eurPrice * quantity;
     const profit = current - invested;
     const percent = (profit / invested) * 100;
 
-    // output Apple
-    document.getElementById("applePrice").innerText =
-      eur.toFixed(2) + " €";
+    // output
+    document.getElementById("price").innerText =
+      "Prezzo: " + eurPrice.toFixed(2) + " €";
 
-    const p = document.getElementById("appleProfit");
-    p.innerText = "Profitto: " + profit.toFixed(2) + " €";
-    p.className = profit >= 0 ? "green" : "red";
+    const profitEl = document.getElementById("profit");
+    profitEl.innerText =
+      "Profitto: " + profit.toFixed(2) + " €";
+    profitEl.className = profit >= 0 ? "green" : "red";
 
-    const pr = document.getElementById("applePercent");
-    pr.innerText = "Performance: " + percent.toFixed(2) + " %";
-    pr.className = percent >= 0 ? "green" : "red";
+    const percentEl = document.getElementById("percent");
+    percentEl.innerText =
+      "Performance: " + percent.toFixed(2) + " %";
+    percentEl.className = percent >= 0 ? "green" : "red";
 
   } catch (e) {
-    document.getElementById("applePrice").innerText = "Errore dati";
+    document.getElementById("price").innerText = "Errore dati";
   }
 }
 
-update();
-setInterval(update, 60000);
+load();
+setInterval(load, 60000);
 
 </script>
 
