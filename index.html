@@ -1,1 +1,130 @@
-<h1>OK FUNZIONA</h1>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Portfolio Banca Privata</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  background:#0a0a0a;
+  color:white;
+}
+
+.header {
+  text-align:center;
+  padding:20px;
+  background:#111;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap:15px;
+  padding:20px;
+}
+
+.card {
+  background:#161616;
+  padding:20px;
+  border-radius:12px;
+}
+
+.title { color:#aaa; }
+.value { font-size:26px; margin-top:10px; }
+
+.green { color:#00e676; }
+.red { color:#ff5252; }
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>🏦 Banca Privata Pro</h1>
+</div>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="title">🍎 Apple</div>
+    <div class="value" id="applePrice">--</div>
+    <div id="appleProfit">--</div>
+  </div>
+
+  <div class="card">
+    <div class="title">🪙 Oro</div>
+    <div class="value" id="gold">--</div>
+  </div>
+
+  <div class="card">
+    <div class="title">🏦 BTP</div>
+    <div class="value" id="btp">10200 €</div>
+  </div>
+
+  <div class="card">
+    <div class="title">💰 Totale</div>
+    <div class="value" id="total">--</div>
+  </div>
+
+</div>
+
+<script>
+
+const qty = 70;
+const buy = 225;
+
+async function load() {
+
+  try {
+
+    // 🍎 Apple
+    const res = await fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL");
+    const data = await res.json();
+
+    const usd = data.quoteResponse.result[0].regularMarketPrice;
+
+    const fx = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=EUR");
+    const fxData = await fx.json();
+
+    const eur = usd * fxData.rates.EUR;
+
+    const profit = (eur - buy) * qty;
+
+    document.getElementById("applePrice").innerText =
+      eur.toFixed(2) + " €";
+
+    document.getElementById("appleProfit").innerText =
+      "Profitto: " + profit.toFixed(2) + " €";
+
+    // 🪙 Oro (semplificato iniziale)
+    const goldRes = await fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=XAUUSD=X");
+    const goldData = await goldRes.json();
+
+    const goldUsd = goldData.quoteResponse.result[0].regularMarketPrice;
+    const goldFx = fxData.rates.EUR;
+
+    const goldEur = goldUsd * goldFx;
+
+    document.getElementById("gold").innerText =
+      goldEur.toFixed(2) + " € / oz";
+
+    // 💰 totale
+    const total = (eur * qty) + 10200;
+
+    document.getElementById("total").innerText =
+      total.toFixed(2) + " €";
+
+  } catch (e) {
+    document.getElementById("total").innerText = "Errore dati";
+  }
+}
+
+load();
+setInterval(load, 60000);
+
+</script>
+
+</body>
+</html>
