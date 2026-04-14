@@ -3,63 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <title>Portfolio Live</title>
-
-<style>
-body {
-  margin:0;
-  background:#0f0f0f;
-  color:white;
-  font-family:Arial;
-}
-
-.header {
-  padding:20px;
-  text-align:center;
-  background:#1c1c1c;
-}
-
-.container {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  margin-top:20px;
-}
-
-.card {
-  background:#1c1c1c;
-  margin:10px;
-  padding:20px;
-  border-radius:12px;
-  width:300px;
-  text-align:center;
-}
-
-.green { color:#00c853; }
-.red { color:#ff5252; }
-</style>
 </head>
 
-<body>
+<body style="background:#111; color:white; font-family:Arial; text-align:center;">
 
-<div class="header">
-  <h1>📊 Portfolio Investimenti</h1>
-</div>
+<h1>📊 Portfolio Investimenti</h1>
 
-<div class="container">
-
-  <div class="card">
-    <h2>🍎 Apple</h2>
-    <div id="price">--</div>
-    <div id="profit">--</div>
-    <div id="percent">--</div>
-  </div>
-
-  <div class="card">
-    <h2>🪙 Oro</h2>
-    <p>Sezione pronta (XAU/EUR)</p>
-  </div>
-
-</div>
+<div id="price" style="font-size:30px;">Caricamento...</div>
+<div id="profit" style="font-size:24px;"></div>
 
 <script>
 
@@ -69,37 +20,23 @@ const buyPrice = 225;
 async function load() {
   try {
 
-    // Apple USD
     const res = await fetch("https://query1.finance.yahoo.com/v7/finance/quote?symbols=AAPL");
     const data = await res.json();
 
     const usd = data.quoteResponse.result[0].regularMarketPrice;
 
-    // EUR conversion
     const fx = await fetch("https://api.exchangerate.host/latest?base=USD&symbols=EUR");
     const fxData = await fx.json();
 
-    const eurPrice = usd * fxData.rates.EUR;
+    const eur = usd * fxData.rates.EUR;
 
-    // calcoli
-    const invested = buyPrice * quantity;
-    const current = eurPrice * quantity;
-    const profit = current - invested;
-    const percent = (profit / invested) * 100;
+    const profit = (eur - buyPrice) * quantity;
 
-    // output
     document.getElementById("price").innerText =
-      "Prezzo: " + eurPrice.toFixed(2) + " €";
+      "Apple: " + eur.toFixed(2) + " €";
 
-    const profitEl = document.getElementById("profit");
-    profitEl.innerText =
+    document.getElementById("profit").innerText =
       "Profitto: " + profit.toFixed(2) + " €";
-    profitEl.className = profit >= 0 ? "green" : "red";
-
-    const percentEl = document.getElementById("percent");
-    percentEl.innerText =
-      "Performance: " + percent.toFixed(2) + " %";
-    percentEl.className = percent >= 0 ? "green" : "red";
 
   } catch (e) {
     document.getElementById("price").innerText = "Errore dati";
